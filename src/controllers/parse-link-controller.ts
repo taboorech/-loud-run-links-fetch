@@ -26,6 +26,12 @@ async function autoScroll(page: Page) {
   });
 }
 
+const itsWork = asyncHandler(async (req: Request, res: Response): Promise<void> => {
+  res.json({
+    message: "its work"
+  })
+});
+
 const parseLink = asyncHandler(async (req: Request, res: Response): Promise<void> => {
   const { url } = await parseLinkValidation.validate(req.body, { abortEarly: false });
 
@@ -69,11 +75,13 @@ const parseLink = asyncHandler(async (req: Request, res: Response): Promise<void
 
     await unlink(filePath);
 
-    res.status(200);
+    res.sendStatus(200);
   } catch (error) {
     await browser.close();
+    console.log(error);
+    
     throw error;
   }
 });
 
-export { parseLink };
+export { itsWork, parseLink };

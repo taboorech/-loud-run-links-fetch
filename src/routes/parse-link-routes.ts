@@ -1,9 +1,10 @@
 import { Router } from "express";
-import { parseLink } from "../controllers/parse-link-controller";
+import { itsWork, parseLink } from "../controllers/parse-link-controller";
 
 const createParseLinkRoutes = () => {
   const router = Router();
 
+  router.get('/', itsWork);
   router.post('/', parseLink);
 
   return router;
