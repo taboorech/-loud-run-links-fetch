@@ -31,7 +31,14 @@ const parseLink = asyncHandler(async (req: Request, res: Response): Promise<void
 
   const launchOptions = {
     headless: true,
-    args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage', '--disable-accelerated-2d-canvas', '--disable-gpu'],
+    args: [
+      '--no-sandbox',
+      '--disable-setuid-sandbox',
+      '--disable-dev-shm-usage',
+      '--disable-accelerated-2d-canvas',
+      '--disable-gpu',
+      '--single-process'
+    ],
     executablePath: '/usr/bin/google-chrome-stable'
   };
 
@@ -39,13 +46,11 @@ const parseLink = asyncHandler(async (req: Request, res: Response): Promise<void
   const page = await browser.newPage();
 
   try {
-    await page.goto(url, { waitUntil: "load" });
+    await page.goto(url, { waitUntil: "load", timeout: 60000 });
 
     await page.setViewport({ width: 1080, height: 1024 * 10 });
 
     await autoScroll(page);
-
-    await page.evaluate(() => new Promise(resolve => setTimeout(resolve, 15000)));
 
     const htmlContent = await page.evaluate(() => document.documentElement.outerHTML);
 
