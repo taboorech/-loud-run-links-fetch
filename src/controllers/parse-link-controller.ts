@@ -29,7 +29,13 @@ async function autoScroll(page: Page) {
 const parseLink = asyncHandler(async (req: Request, res: Response): Promise<void> => {
   const { url } = await parseLinkValidation.validate(req.body, { abortEarly: false });
 
-  const browser = await puppeteer.launch();
+  const launchOptions = {
+    headless: true,
+    args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage', '--disable-accelerated-2d-canvas', '--disable-gpu'],
+    executablePath: '/usr/bin/google-chrome-stable'
+  };
+
+  const browser = await puppeteer.launch(launchOptions);
   const page = await browser.newPage();
 
   try {
