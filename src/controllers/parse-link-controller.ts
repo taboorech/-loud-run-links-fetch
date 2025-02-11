@@ -63,20 +63,13 @@ const parseLink = asyncHandler(async (req: Request, res: Response): Promise<void
 
     const bucket = storage.bucket(process.env.GOOGLE_CLOUD_BUCKET_NAME || "");
 
-    const file = bucket.file(`html/${fileName}`);
+    bucket.file(`html/${fileName}`);
 
     await bucket.upload(filePath, { destination: `html/${fileName}` });
 
     await unlink(filePath);
 
-    const [publicUrl] = await file.getSignedUrl({
-      action: "read",
-      expires: Date.now() + 1000 * 60 * 60 * 24,
-    });
-
-    await browser.close();
-
-    res.status(200).json({ url: publicUrl });
+    res.status(200);
   } catch (error) {
     await browser.close();
     throw error;
