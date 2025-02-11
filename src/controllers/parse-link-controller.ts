@@ -74,7 +74,9 @@ const parseLink = asyncHandler(async (req: Request, res: Response): Promise<void
       expires: Date.now() + 1000 * 60 * 60 * 24,
     });
 
-    res.json({ url: publicUrl });
+    await browser.close();
+
+    res.status(200).json({ url: publicUrl });
   } catch (error) {
     await browser.close();
     throw error;
