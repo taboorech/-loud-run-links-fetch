@@ -1,15 +1,13 @@
-import { format, createLogger, transports } from "winston";
-const { combine, timestamp, json, errors } = format;
+import { createLogger, transports } from "winston";
+import { LoggingWinston } from "@google-cloud/logging-winston";
+
+const loggingWinston = new LoggingWinston();
 
 const logger = createLogger({
   level: 'info',
-  format: combine(
-    timestamp(),
-    errors({ stack: true }),
-    json()
-  ),
   transports: [
-    new transports.Console()
+    new transports.Console(),
+    loggingWinston
   ]
 });
 

@@ -84,7 +84,7 @@ const parseLink = asyncHandler(async (req: Request, res: Response): Promise<void
     res.sendStatus(200);
   } catch (error) {
     await browser.close();
-    logger.error("Error while parsing link", { error });
+    logger.error(error);
     
     throw error;
   }
