@@ -6,6 +6,7 @@ import { parseLinkValidation } from "../yup/parse-link.scheme";
 import { join } from "path";
 import { writeFile, unlink } from "fs/promises";
 import { storage } from "../libs/constantas/storage.const";
+import { logger } from "../config/logger";
 
 async function autoScroll(page: Page) {
   await page.evaluate(() => {
@@ -27,6 +28,7 @@ async function autoScroll(page: Page) {
 }
 
 const itsWork = asyncHandler(async (req: Request, res: Response): Promise<void> => {
+  logger.info("Health check endpoint called");
   res.json({
     message: "its work"
   })
@@ -34,6 +36,8 @@ const itsWork = asyncHandler(async (req: Request, res: Response): Promise<void> 
 
 const parseLink = asyncHandler(async (req: Request, res: Response): Promise<void> => {
   const { url } = await parseLinkValidation.validate(req.body, { abortEarly: false });
+
+  logger.info(`Started parsing URL: ${url}`);
 
   const launchOptions = {
     headless: true,
@@ -48,6 +52,7 @@ const parseLink = asyncHandler(async (req: Request, res: Response): Promise<void
     executablePath: '/usr/bin/google-chrome-stable'
   };
 
+  logger.info("Launching Puppeteer");
   const browser = await puppeteer.launch(launchOptions);
   const page = await browser.newPage();
 
@@ -75,10 +80,11 @@ const parseLink = asyncHandler(async (req: Request, res: Response): Promise<void
 
     await unlink(filePath);
 
+    logger.info(`URL ${url} parsed successfully`);
     res.sendStatus(200);
   } catch (error) {
     await browser.close();
-    console.log(error);
+    logger.error("Error while parsing link", { error });
     
     throw error;
   }
